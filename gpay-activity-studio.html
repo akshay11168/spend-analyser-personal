@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GPay Activity Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f3f5f2;
+      --surface: #ffffff;
+      --ink: #14201a;
+      --muted: #5c6b63;
+      --line: #d5ddd7;
+      --accent: #0f6b4c;
+      --accent-soft: #e3f2eb;
+      --warn: #9a5b00;
+      --warn-soft: #fff1d6;
+      --danger: #9b2c2c;
+      --danger-soft: #fde8e8;
+      --info: #1d4f7a;
+      --shadow: 0 1px 0 rgba(20, 32, 26, 0.04);
+      --radius: 14px;
+      --font: "Figtree", system-ui, sans-serif;
+      --display: "Fraunces", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #dff0e7 0%, transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, #e7eef5 0%, transparent 50%),
+        var(--bg);
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    header.hero {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    header.hero h1 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    header.hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .upload {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .drop {
+      border: 1.5px dashed #a9b8b0;
+      border-radius: 12px;
+      padding: 28px 18px;
+      text-align: center;
+      background: #f8faf8;
+      transition: border-color .15s, background .15s;
+      cursor: pointer;
+    }
+    .drop.dragover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .drop strong { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+    .drop span { color: var(--muted); font-size: 0.92rem; }
+    .upload-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .file-meta { color: var(--muted); font-size: 0.9rem; }
+    input[type="file"] { display: none; }
+
+    button, .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 9px 16px;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .controls {
+      display: none;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 900px) {
+      .controls { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .controls { grid-template-columns: 1fr; }
+    }
+    .controls label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .controls input, .controls select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    #dashboard { display: none; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 900px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+    .stat {
+      padding: 16px 16px 14px;
+    }
+    .stat .label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .stat .value {
+      font-family: var(--display);
+      font-size: 1.55rem;
+      margin-top: 6px;
+      letter-spacing: -0.02em;
+    }
+    .stat .sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .stat.accent { background: var(--accent-soft); border-color: #c5dfd2; }
+    .stat.warn { background: var(--warn-soft); border-color: #edd7a4; }
+    .stat.danger { background: var(--danger-soft); border-color: #f0c4c4; }
+
+    .callout {
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      border: 1px solid #c5dfd2;
+      margin-bottom: 18px;
+      color: #184536;
+    }
+    .callout strong { color: var(--ink); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 960px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    .card { padding: 16px; }
+    .card h2 {
+      font-family: var(--display);
+      font-size: 1.2rem;
+      margin: 0 0 4px;
+      font-weight: 700;
+    }
+    .card .hint {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin: 0 0 14px;
+    }
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 280px;
+    }
+    .chart-box.sm { height: 240px; }
+
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    table.data th, table.data td {
+      text-align: left;
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    table.data th {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 700;
+    }
+    table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    table.data tr:hover td { background: #f7faf8; }
+    .scroll {
+      max-height: 360px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .scroll table.data th {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #eef2ef;
+      color: var(--ink);
+    }
+    .pill.green { background: var(--accent-soft); color: #0f6b4c; }
+    .pill.amber { background: var(--warn-soft); color: var(--warn); }
+    .pill.red { background: var(--danger-soft); color: var(--danger); }
+
+    .insights {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--ink);
+    }
+    .insights li { margin: 0; }
+    .insights li::marker { color: var(--accent); }
+
+    footer.note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .error {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>GPay Activity Studio</h1>
+      <p>
+        One page for the full pipeline: drop Google Takeout
+        <strong>My Activity.html</strong> (or an already-extracted CSV), parse every
+        <code>outer-cell</code> into rows, then analyze spend, transfers, merchants,
+        and trends. You can also download the extracted CSV.
+      </p>
+    </header>
+
+    <section class="panel upload">
+      <div class="drop" id="dropzone" tabindex="0" role="button" aria-label="Upload My Activity HTML or CSV">
+        <strong>Drop My Activity.html or CSV here</strong>
+        <span>HTML = Google Pay / Takeout export · CSV = previously extracted activity file</span>
+      </div>
+      <div class="upload-row">
+        <div class="file-meta" id="fileMeta">No file loaded</div>
+        <div>
+          <button type="button" id="browseBtn" class="primary">Choose file</button>
+          <button type="button" id="downloadCsvBtn" disabled>Download extracted CSV</button>
+          <button type="button" id="exportBtn" disabled>Export filtered CSV</button>
+        </div>
+      </div>
+      <input id="fileInput" type="file" accept=".html,.htm,.csv,text/html,text/csv" />
+      <div class="error" id="errorBox"></div>
+    </section>
+
+    <section class="panel controls" id="controls">
+      <label>
+        From
+        <input type="date" id="fromDate" />
+      </label>
+      <label>
+        To
+        <input type="date" id="toDate" />
+      </label>
+      <label>
+        Status
+        <select id="statusFilter">
+          <option value="Completed" selected>Completed only</option>
+          <option value="all">All statuses</option>
+          <option value="Failed">Failed</option>
+          <option value="Pending">Pending</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </label>
+      <label>
+        Exclude transfers ≥ ₹
+        <input type="number" id="transferCut" value="10000" min="0" step="1000" />
+      </label>
+      <label>
+        Exclude self/bank transfers
+        <select id="excludeSelf">
+          <option value="yes" selected>Yes (recommended)</option>
+          <option value="no">No — include everything</option>
+        </select>
+      </label>
+      <label>
+        Direction
+        <select id="direction">
+          <option value="out" selected>Outflows (Paid + Sent)</option>
+          <option value="in">Inflows (Received)</option>
+          <option value="both">Both</option>
+        </select>
+      </label>
+      <label>
+        Search merchant / description
+        <input type="search" id="search" placeholder="e.g. Zomato, IRCTC" />
+      </label>
+      <label>
+        Top N merchants
+        <input type="number" id="topN" value="20" min="5" max="100" />
+      </label>
+    </section>
+
+    <div id="dashboard">
+      <div class="callout" id="takeaway"></div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="grid-2">
+        <section class="panel card">
+          <h2>Monthly outflow mix</h2>
+          <p class="hint">Transfers vs investments vs lifestyle vs other (filtered range)</p>
+          <div class="chart-box"><canvas id="monthlyChart"></canvas></div>
+        </section>
+        <section class="panel card">
+          <h2>Category split</h2>
+          <p class="hint">Heuristic labels from merchant / description text</p>
+          <div class="chart-box sm"><canvas id="categoryChart"></canvas></div>
+        </section>
+      </div>
+
+      <div class="grid-2">
+        <section class="panel card">
+          <h2>Yearly inflow vs outflow</h2>
+          <p class="hint">Completed amounts by calendar year (ignores transfer-cut filter)</p>
+          <div class="chart-box"><canvas id="yearlyChart"></canvas></div>
+        </section>
+        <section class="panel card">
+          <h2>Key insights</h2>
+          <p class="hint">Auto-generated from the current filters</p>
+          <div class="pills" id="insightPills"></div>
+          <ul class="insights" id="insightList"></ul>
+        </section>
+      </div>
+
+      <div class="grid-3">
+        <section class="panel card">
+          <h2>Top merchants</h2>
+          <p class="hint">By amount in current filter</p>
+          <div class="scroll">
+            <table class="data" id="merchantTable">
+              <thead>
+                <tr>
+                  <th>Merchant</th>
+                  <th class="num">Amount</th>
+                  <th class="num">Txns</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel card">
+          <h2>Recurring payees</h2>
+          <p class="hint">Appears in ≥ 6 distinct months</p>
+          <div class="scroll">
+            <table class="data" id="recurringTable">
+              <thead>
+                <tr>
+                  <th>Payee</th>
+                  <th class="num">Months</th>
+                  <th class="num">Total</th>
+                  <th class="num">Avg</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel card">
+          <h2>Investments &amp; credit</h2>
+          <p class="hint">Detected via name keywords</p>
+          <div class="scroll">
+            <table class="data" id="investTable">
+              <thead>
+                <tr>
+                  <th>Destination</th>
+                  <th class="num">Amount</th>
+                  <th class="num">Txns</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid-2">
+        <section class="panel card">
+          <h2>Largest transactions</h2>
+          <p class="hint">Top amounts in the current filtered set</p>
+          <div class="scroll">
+            <table class="data" id="largeTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Action</th>
+                  <th>Counterparty / description</th>
+                  <th class="num">Amount</th>
+                  <th>Category</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel card">
+          <h2>Weekday pattern</h2>
+          <p class="hint">Outflow amount by day of week</p>
+          <div class="chart-box sm"><canvas id="weekdayChart"></canvas></div>
+          <div style="height:14px"></div>
+          <h2>Status mix</h2>
+          <p class="hint">Across the loaded file (unfiltered)</p>
+          <div class="chart-box sm"><canvas id="statusChart"></canvas></div>
+        </section>
+      </div>
+
+      <footer class="note">
+        HTML parsing looks for repeating <code>outer-cell</code> blocks (Google Pay Takeout format).
+        Categories are name-based heuristics and will mislabel some merchants.
+        Google Pay exports are not a full bank ledger — salary, cash, and other UPI apps may be missing.
+        Charts need an internet connection once (Chart.js CDN + fonts). Large HTML files may take a few seconds to parse.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const MONTHS_SHORT = {
+      Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+      Jul: 6, Aug: 7, Sept: 8, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+    };
+
+    const CAT_RULES = [
+      ["Investments & credit", /sbi mutual|mutual fund|nps trust|national pension|\bcred\b|credclub|groww|zerodha|kuvera|paytm money|coin app|\bepf\b/i],
+      ["Food delivery", /zomato|swiggy|eatclub|magicpin|dunzo/i],
+      ["Groceries", /blinkit|zepto|bigbasket|instamart|dmart|avenue supermarts|ratnadeep|lulu|reliance fresh|nature.?s basket|xpress home|buy n save/i],
+      ["Fast food", /mcdonald|mcdonal|kfc|domino|pizza|burger|starbucks|subway|karavali|rameshwaram|biriyani|cafe/i],
+      ["Shopping", /amazon|flipkart|myntra|ajio|meesho|nykaa|lenskart|tatacliq|urban company/i],
+      ["Entertainment", /netflix|spotify|hotstar|bookmyshow|youtube|pvr|inox|jiocinema|prime video/i],
+      ["Travel & transport", /irctc|redbus|indigo|makemytrip|ibibo|goibibo|uber|ola|rapido|air india|spicejet|petrol|fuel|hpcl|bpcl|iocl|service station/i],
+      ["Utilities & recharge", /mahavitaran|msedcl|electricity|jio|airtel|\bvi\b|vodafone|bsnl|act broadband|tata power|gas|bharat gas/i],
+      ["Digital / apps", /google play|udemy|apple\.com|microsoft/i],
+    ];
+
+    const state = {
+      rows: [],
+      charts: {},
+      sourceKind: "", // html | csv
+      extractedRaw: [], // plain objects before normalize (for full CSV download)
+    };
+
+    const CSV_COLUMNS = [
+      "product",
+      "action",
+      "description",
+      "amount",
+      "currency",
+      "counterparty",
+      "payment_method",
+      "datetime",
+      "status",
+      "transaction_id",
+      "details",
+      "extra",
+    ];
+
+    const $ = (id) => document.getElementById(id);
+
+    function showError(msg) {
+      const box = $("errorBox");
+      box.style.display = msg ? "block" : "none";
+      box.textContent = msg || "";
+    }
+
+    function setMeta(text) {
+      $("fileMeta").textContent = text;
+    }
+
+    /* ========== HTML → rows (same logic as extract-to-csv.mjs) ========== */
+
+    const HTML_ENTITIES = {
+      amp: "&",
+      lt: "<",
+      gt: ">",
+      quot: '"',
+      apos: "'",
+      nbsp: " ",
+      emsp: " ",
+    };
+
+    function decodeEntities(text) {
+      return text
+        .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+        .replace(/&#x([0-9a-f]+);/gi, (_, h) =>
+          String.fromCharCode(parseInt(h, 16)),
+        )
+        .replace(
+          /&([a-z]+);/gi,
+          (match, name) => HTML_ENTITIES[name.toLowerCase()] ?? match,
+        );
+    }
+
+    function stripTags(html) {
+      return decodeEntities(html.replace(/<[^>]+>/g, ""));
+    }
+
+    function cleanText(html) {
+      return stripTags(html).replace(/\s+/g, " ").trim();
+    }
+
+    function splitLines(html) {
+      return html
+        .split(/<br\s*\/?>/i)
+        .map((part) => cleanText(part))
+        .filter(Boolean);
+    }
+
+    function csvEscape(value) {
+      const s = value == null ? "" : String(value);
+      if (/[",\r\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+      return s;
+    }
+
+    function parseDescription(description) {
+      const result = {
+        action: "",
+        amount: "",
+        currency: "",
+        counterparty: "",
+        payment_method: "",
+      };
+
+      const amountMatch = description.match(/([₹$€£])\s*([\d,]+(?:\.\d+)?)/);
+      if (amountMatch) {
+        result.currency = amountMatch[1] === "₹" ? "INR" : amountMatch[1];
+        result.amount = amountMatch[2].replace(/,/g, "");
+      }
+
+      const paid = description.match(
+        /^Paid\s+.+\s+to\s+(.+?)(?:\s+using\s+(.+))?$/i,
+      );
+      if (paid) {
+        result.action = "Paid";
+        result.counterparty = paid[1].trim();
+        result.payment_method = (paid[2] ?? "").trim();
+        return result;
+      }
+
+      const sentTo = description.match(
+        /^Sent\s+.+\s+to\s+(.+?)(?:\s+using\s+(.+))?$/i,
+      );
+      if (sentTo) {
+        result.action = "Sent";
+        result.counterparty = sentTo[1].trim();
+        result.payment_method = (sentTo[2] ?? "").trim();
+        return result;
+      }
+
+      const sentUsing = description.match(/^Sent\s+.+\s+using\s+(.+)$/i);
+      if (sentUsing) {
+        result.action = "Sent";
+        result.payment_method = sentUsing[1].trim();
+        return result;
+      }
+
+      const received = description.match(/^Received\s+.+\s+from\s+(.+)$/i);
+      if (received) {
+        result.action = "Received";
+        result.counterparty = received[1].trim();
+        return result;
+      }
+
+      if (/^.+\s+requested from you$/i.test(description)) {
+        result.action = "Requested from you";
+        return result;
+      }
+
+      if (/^Requested\b/i.test(description)) {
+        result.action = "Requested";
+        return result;
+      }
+
+      result.action = description.split(/\s+/)[0] || "Other";
+      return result;
+    }
+
+    function parseCaption(captionHtml) {
+      const lines = splitLines(captionHtml);
+      let product = "";
+      let transactionId = "";
+      let status = "";
+      const details = [];
+      let section = null;
+
+      for (const line of lines) {
+        if (/^Products:$/i.test(line)) {
+          section = "products";
+          continue;
+        }
+        if (/^Details:$/i.test(line)) {
+          section = "details";
+          continue;
+        }
+        if (/^Why is this here\?$/i.test(line)) {
+          section = "why";
+          continue;
+        }
+
+        if (section === "products" && !product) {
+          product = line;
+          continue;
+        }
+
+        if (section === "details") {
+          if (/^(Completed|Failed|Pending|Cancelled|Declined)$/i.test(line)) {
+            status = line;
+          } else if (!transactionId && !/^From\b/i.test(line)) {
+            transactionId = line;
+          } else {
+            details.push(line);
+          }
+          continue;
+        }
+
+        if (section === "why") details.push(line);
+      }
+
+      return { product, transactionId, status, details: details.join(" | ") };
+    }
+
+    function extractOuterCells(html) {
+      const startRe =
+        /<div class="outer-cell mdl-cell mdl-cell--12-col mdl-shadow--2dp">/g;
+      const blocks = [];
+      let startMatch;
+
+      while ((startMatch = startRe.exec(html)) !== null) {
+        const contentStart = startMatch.index + startMatch[0].length;
+        let depth = 1;
+        let i = contentStart;
+
+        while (i < html.length && depth > 0) {
+          const nextOpen = html.indexOf("<div", i);
+          const nextClose = html.indexOf("</div>", i);
+          if (nextClose === -1) break;
+
+          if (nextOpen !== -1 && nextOpen < nextClose) {
+            depth += 1;
+            i = nextOpen + 4;
+          } else {
+            depth -= 1;
+            if (depth === 0) {
+              blocks.push(html.slice(contentStart, nextClose));
+              break;
+            }
+            i = nextClose + 6;
+          }
+        }
+      }
+
+      return blocks;
+    }
+
+    function extractActivitiesFromHtml(html) {
+      const rows = [];
+
+      for (const block of extractOuterCells(html)) {
+        const headerMatch = block.match(
+          /class="header-cell[^"]*"[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i,
+        );
+        const header = headerMatch
+          ? cleanText(headerMatch[1]).replace(/<br\s*\/?>/gi, "")
+          : "";
+
+        const bodyCells = [
+          ...block.matchAll(
+            /class="content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1(?: mdl-typography--text-right)?"\s*>([\s\S]*?)<\/div>/gi,
+          ),
+        ].map((m) => m[1]);
+
+        const leftLines = splitLines(bodyCells[0] ?? "");
+        const description = leftLines[0] ?? "";
+        const datetime = leftLines[1] ?? "";
+        const rightText = cleanText(bodyCells[1] ?? "");
+
+        const captionMatch = block.match(
+          /class="content-cell mdl-cell mdl-cell--12-col mdl-typography--caption"\s*>([\s\S]*?)<\/div>/i,
+        );
+        const caption = parseCaption(captionMatch?.[1] ?? "");
+        const parsed = parseDescription(description);
+
+        rows.push({
+          product: caption.product || header,
+          action: parsed.action,
+          description,
+          amount: parsed.amount,
+          currency: parsed.currency,
+          counterparty: parsed.counterparty,
+          payment_method: parsed.payment_method,
+          datetime,
+          status: caption.status,
+          transaction_id: caption.transactionId,
+          details: caption.details,
+          extra: rightText,
+        });
+      }
+
+      return rows;
+    }
+
+    function looksLikeActivityHtml(text) {
+      return (
+        /outer-cell mdl-cell mdl-cell--12-col/.test(text) ||
+        (/My Activity/i.test(text) && /content-cell mdl-cell/.test(text))
+      );
+    }
+
+    function rowsToCsv(rows, columns = CSV_COLUMNS) {
+      return [
+        columns.join(","),
+        ...rows.map((row) =>
+          columns.map((col) => csvEscape(row[col])).join(","),
+        ),
+      ].join("\n");
+    }
+
+    function downloadText(filename, text, mime = "text/csv;charset=utf-8") {
+      const blob = new Blob([text + (text.endsWith("\n") ? "" : "\n")], {
+        type: mime,
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    /* ========== Analysis helpers ========== */
+
+    function inr(n) {
+      const abs = Math.abs(n);
+      const sign = n < 0 ? "-" : "";
+      if (abs >= 1e7) return `${sign}₹${(abs / 1e7).toFixed(2)} Cr`;
+      if (abs >= 1e5) return `${sign}₹${(abs / 1e5).toFixed(2)} L`;
+      return (
+        sign +
+        "₹" +
+        abs.toLocaleString("en-IN", {
+          maximumFractionDigits: abs >= 100 ? 0 : 2,
+          minimumFractionDigits: 0,
+        })
+      );
+    }
+
+    function parseAmount(v) {
+      if (v == null || v === "") return 0;
+      const n = Number(String(v).replace(/,/g, ""));
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function parseDate(s) {
+      if (!s) return null;
+      // 6 Nov 2017, 21:34:44 IST  |  30 Sept 2019, 12:58:57 IST
+      const m = String(s)
+        .trim()
+        .match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4}),\s*(\d{1,2}):(\d{2}):(\d{2})/);
+      if (!m) {
+        const d = new Date(s);
+        return Number.isNaN(d.getTime()) ? null : d;
+      }
+      const mon = MONTHS_SHORT[m[2]] ?? MONTHS_SHORT[m[2].slice(0, 3)];
+      if (mon == null) return null;
+      return new Date(
+        Number(m[3]),
+        mon,
+        Number(m[1]),
+        Number(m[4]),
+        Number(m[5]),
+        Number(m[6]),
+      );
+    }
+
+    function toISODate(d) {
+      if (!d) return "";
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    /** Minimal CSV parser supporting quotes / commas / newlines in fields */
+    function parseCSV(text) {
+      const rows = [];
+      let i = 0;
+      let field = "";
+      let row = [];
+      let inQuotes = false;
+
+      while (i < text.length) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i + 1] === '"') {
+              field += '"';
+              i += 2;
+              continue;
+            }
+            inQuotes = false;
+            i += 1;
+            continue;
+          }
+          field += c;
+          i += 1;
+          continue;
+        }
+        if (c === '"') {
+          inQuotes = true;
+          i += 1;
+          continue;
+        }
+        if (c === ",") {
+          row.push(field);
+          field = "";
+          i += 1;
+          continue;
+        }
+        if (c === "\n" || c === "\r") {
+          if (c === "\r" && text[i + 1] === "\n") i += 1;
+          row.push(field);
+          field = "";
+          if (row.some((x) => x !== "")) rows.push(row);
+          row = [];
+          i += 1;
+          continue;
+        }
+        field += c;
+        i += 1;
+      }
+      if (field.length || row.length) {
+        row.push(field);
+        if (row.some((x) => x !== "")) rows.push(row);
+      }
+      if (!rows.length) return [];
+      const headers = rows[0].map((h) => h.trim());
+      return rows.slice(1).map((cells) => {
+        const obj = {};
+        headers.forEach((h, idx) => {
+          obj[h] = cells[idx] ?? "";
+        });
+        return obj;
+      });
+    }
+
+    function isSelfTransfer(r) {
+      return r.action === "Sent" && !String(r.counterparty || "").trim();
+    }
+
+    function categorize(r) {
+      const text = `${r.counterparty || ""} ${r.description || ""}`;
+      if (isSelfTransfer(r)) return "Self / bank transfer";
+      for (const [name, re] of CAT_RULES) {
+        if (re.test(text)) return name;
+      }
+      if (r.action === "Sent") return "P2P sent";
+      if (r.action === "Received") return "Received / inflow";
+      if (String(r.counterparty || "").trim()) return "Other merchants";
+      if (r.action === "Paid") return "Unlabeled paid";
+      return "Other";
+    }
+
+    function normalizeRows(raw) {
+      const needed = ["action", "amount", "datetime"];
+      const keys = Object.keys(raw[0] || {}).map((k) => k.toLowerCase());
+      const map = {};
+      for (const k of Object.keys(raw[0] || {})) map[k.toLowerCase()] = k;
+
+      for (const n of needed) {
+        if (!keys.includes(n) && !(n === "amount" && keys.includes("amt"))) {
+          throw new Error(
+            `CSV missing required column "${n}". Got: ${Object.keys(raw[0] || {}).join(", ") || "(empty)"}`,
+          );
+        }
+      }
+
+      return raw.map((r) => {
+        const get = (name) => r[map[name]] ?? r[name] ?? "";
+        const amount = parseAmount(get("amount") || get("amt"));
+        const datetime = get("datetime") || get("date") || get("time");
+        const dt = parseDate(datetime);
+        const row = {
+          product: get("product"),
+          action: String(get("action")).trim(),
+          description: get("description"),
+          amount,
+          currency: get("currency") || "INR",
+          counterparty: String(get("counterparty")).trim(),
+          payment_method: get("payment_method") || get("payment method"),
+          datetime,
+          status: String(get("status")).trim(),
+          transaction_id: get("transaction_id") || get("transaction id"),
+          details: get("details"),
+          extra: get("extra"),
+          dt,
+          ym: dt ? `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}` : "",
+          year: dt ? dt.getFullYear() : null,
+        };
+        row.category = categorize(row);
+        return row;
+      });
+    }
+
+    function destroyCharts() {
+      for (const k of Object.keys(state.charts)) {
+        state.charts[k]?.destroy?.();
+        delete state.charts[k];
+      }
+    }
+
+    function chartColors() {
+      return {
+        transfer: "#c9851a",
+        invest: "#0f6b4c",
+        lifestyle: "#1d4f7a",
+        other: "#7a8790",
+        out: "#9b2c2c",
+        in: "#0f6b4c",
+        palette: [
+          "#0f6b4c",
+          "#1d4f7a",
+          "#c9851a",
+          "#9b2c2c",
+          "#5b4a8a",
+          "#2f6f6a",
+          "#8a5a2b",
+          "#4d5d53",
+          "#356189",
+        ],
+      };
+    }
+
+    function getFilters() {
+      return {
+        from: $("fromDate").value ? new Date($("fromDate").value + "T00:00:00") : null,
+        to: $("toDate").value ? new Date($("toDate").value + "T23:59:59") : null,
+        status: $("statusFilter").value,
+        transferCut: Number($("transferCut").value) || 0,
+        excludeSelf: $("excludeSelf").value === "yes",
+        direction: $("direction").value,
+        search: $("search").value.trim().toLowerCase(),
+        topN: Number($("topN").value) || 20,
+      };
+    }
+
+    function applyFilters(rows, f) {
+      return rows.filter((r) => {
+        if (!r.dt) return false;
+        if (f.from && r.dt < f.from) return false;
+        if (f.to && r.dt > f.to) return false;
+
+        if (f.status !== "all") {
+          if (f.status === "Completed") {
+            // Treat blank status as completed (common in older export rows)
+            if (r.status && r.status !== "Completed") return false;
+          } else if (r.status !== f.status) {
+            return false;
+          }
+        }
+
+        if (f.direction === "out" && !["Paid", "Sent"].includes(r.action)) return false;
+        if (f.direction === "in" && r.action !== "Received") return false;
+
+        if (f.search) {
+          const blob = `${r.counterparty} ${r.description} ${r.category}`.toLowerCase();
+          if (!blob.includes(f.search)) return false;
+        }
+
+        // Self / bank transfers (Sent with no counterparty)
+        if (isSelfTransfer(r)) {
+          if (f.excludeSelf) return false;
+          if (f.transferCut > 0 && r.amount >= f.transferCut) return false;
+        }
+
+        // Large unlabeled Paid rows are often account moves too
+        if (
+          f.transferCut > 0 &&
+          r.action === "Paid" &&
+          !r.counterparty &&
+          r.amount >= f.transferCut
+        ) {
+          return false;
+        }
+
+        return r.amount > 0;
+      });
+    }
+
+    function aggregate(rows) {
+      const byCat = new Map();
+      const byMerchant = new Map();
+      const byMonth = new Map();
+      const byWeekday = Array.from({ length: 7 }, () => 0);
+      const merchantMonths = new Map();
+      const invest = new Map();
+      let total = 0;
+
+      const lifestyleCats = new Set([
+        "Food delivery",
+        "Groceries",
+        "Fast food",
+        "Shopping",
+        "Entertainment",
+        "Travel & transport",
+        "Utilities & recharge",
+        "Digital / apps",
+      ]);
+
+      for (const r of rows) {
+        total += r.amount;
+        byCat.set(r.category, (byCat.get(r.category) || 0) + r.amount);
+
+        const merchant = r.counterparty || (isSelfTransfer(r) ? "(self / bank transfer)" : "(unlabeled)");
+        const m = byMerchant.get(merchant) || { amount: 0, count: 0 };
+        m.amount += r.amount;
+        m.count += 1;
+        byMerchant.set(merchant, m);
+
+        if (r.ym) {
+          const bucket = byMonth.get(r.ym) || {
+            transfer: 0,
+            invest: 0,
+            lifestyle: 0,
+            other: 0,
+            total: 0,
+          };
+          if (r.category === "Self / bank transfer") bucket.transfer += r.amount;
+          else if (r.category === "Investments & credit") bucket.invest += r.amount;
+          else if (lifestyleCats.has(r.category)) bucket.lifestyle += r.amount;
+          else bucket.other += r.amount;
+          bucket.total += r.amount;
+          byMonth.set(r.ym, bucket);
+
+          if (r.counterparty) {
+            if (!merchantMonths.has(r.counterparty)) merchantMonths.set(r.counterparty, new Set());
+            merchantMonths.get(r.counterparty).add(r.ym);
+          }
+        }
+
+        if (r.dt) byWeekday[r.dt.getDay()] += r.amount;
+
+        if (r.category === "Investments & credit") {
+          const name = r.counterparty || r.description.slice(0, 40) || "Unknown";
+          const inv = invest.get(name) || { amount: 0, count: 0 };
+          inv.amount += r.amount;
+          inv.count += 1;
+          invest.set(name, inv);
+        }
+      }
+
+      const recurring = [];
+      for (const [name, months] of merchantMonths.entries()) {
+        if (months.size < 6) continue;
+        const m = byMerchant.get(name);
+        if (!m) continue;
+        recurring.push({
+          name,
+          months: months.size,
+          total: m.amount,
+          avg: m.amount / m.count,
+          count: m.count,
+        });
+      }
+      recurring.sort((a, b) => b.months - a.months || b.total - a.total);
+
+      return {
+        total,
+        byCat,
+        byMerchant,
+        byMonth,
+        byWeekday,
+        recurring,
+        invest,
+        count: rows.length,
+      };
+    }
+
+    function yearlySeries(allRows) {
+      const years = new Map();
+      for (const r of allRows) {
+        if (!r.year || r.amount <= 0) continue;
+        if (r.status && r.status !== "Completed") continue;
+        const y = years.get(r.year) || { out: 0, inn: 0 };
+        if (["Paid", "Sent"].includes(r.action)) y.out += r.amount;
+        if (r.action === "Received") y.inn += r.amount;
+        years.set(r.year, y);
+      }
+      const labels = [...years.keys()].sort((a, b) => a - b).map(String);
+      return {
+        labels,
+        out: labels.map((y) => years.get(Number(y)).out),
+        inn: labels.map((y) => years.get(Number(y)).inn),
+      };
+    }
+
+    function statusSeries(allRows) {
+      const c = new Map();
+      for (const r of allRows) {
+        const s = r.status || "(blank)";
+        c.set(s, (c.get(s) || 0) + 1);
+      }
+      const labels = [...c.keys()];
+      return { labels, data: labels.map((k) => c.get(k)) };
+    }
+
+    function renderStats(agg, f, allRows) {
+      const selfAll = allRows.filter(
+        (r) =>
+          isSelfTransfer(r) &&
+          r.status === "Completed" &&
+          (!f.from || r.dt >= f.from) &&
+          (!f.to || r.dt <= f.to),
+      );
+      const selfAmt = selfAll.reduce((s, r) => s + r.amount, 0);
+      const investAmt = [...agg.byCat.entries()]
+        .filter(([k]) => k === "Investments & credit")
+        .reduce((s, [, v]) => s + v, 0);
+      const lifestyleAmt = [...agg.byCat.entries()]
+        .filter(([k]) =>
+          [
+            "Food delivery",
+            "Groceries",
+            "Fast food",
+            "Shopping",
+            "Entertainment",
+            "Travel & transport",
+            "Utilities & recharge",
+            "Digital / apps",
+          ].includes(k),
+        )
+        .reduce((s, [, v]) => s + v, 0);
+
+      $("stats").innerHTML = `
+        <div class="panel stat">
+          <div class="label">Filtered total</div>
+          <div class="value">${inr(agg.total)}</div>
+          <div class="sub">${agg.count.toLocaleString("en-IN")} transactions</div>
+        </div>
+        <div class="panel stat accent">
+          <div class="label">Lifestyle categories</div>
+          <div class="value">${inr(lifestyleAmt)}</div>
+          <div class="sub">Food, travel, utilities, shopping…</div>
+        </div>
+        <div class="panel stat warn">
+          <div class="label">Self transfers in range</div>
+          <div class="value">${inr(selfAmt)}</div>
+          <div class="sub">${selfAll.length.toLocaleString("en-IN")} completed sends w/o payee</div>
+        </div>
+        <div class="panel stat">
+          <div class="label">Investments (filtered)</div>
+          <div class="value">${inr(investAmt)}</div>
+          <div class="sub">Name-matched SIPs / NPS / CRED</div>
+        </div>
+      `;
+
+      $("takeaway").innerHTML = `
+        <strong>Takeaway:</strong>
+        With current filters, tracked activity is <strong>${inr(agg.total)}</strong>.
+        Self/bank transfers in this date range total <strong>${inr(selfAmt)}</strong>
+        ${f.excludeSelf ? "(excluded from charts/tables below)" : "(included)"}.
+        Lifestyle-labeled spend is <strong>${inr(lifestyleAmt)}</strong>.
+      `;
+    }
+
+    function renderInsights(agg, filtered, allRows, f) {
+      const pills = $("insightPills");
+      const list = $("insightList");
+      pills.innerHTML = "";
+      list.innerHTML = "";
+
+      const failed = allRows.filter((r) => r.status === "Failed");
+      const pending = allRows.filter((r) => r.status === "Pending");
+      const top = [...agg.byMerchant.entries()].sort((a, b) => b[1].amount - a[1].amount)[0];
+      const months = [...agg.byMonth.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+      const avgMonth =
+        months.length > 0
+          ? months.reduce((s, [, v]) => s + v.total, 0) / months.length
+          : 0;
+
+      const addPill = (text, cls = "") => {
+        const el = document.createElement("span");
+        el.className = `pill ${cls}`;
+        el.textContent = text;
+        pills.appendChild(el);
+      };
+
+      addPill(`${filtered.length} filtered txns`, "green");
+      addPill(`Avg month ${inr(avgMonth)}`);
+      if (top) addPill(`Top: ${top[0].slice(0, 28)}`, "amber");
+      addPill(`${failed.length} failed`, "red");
+      addPill(`${pending.length} pending`, "amber");
+
+      const insights = [];
+      if (f.excludeSelf) {
+        insights.push(
+          "Self/bank transfers are excluded — totals are closer to actual merchant & P2P spend.",
+        );
+      } else {
+        insights.push(
+          "Self/bank transfers are included — large round amounts will dominate averages.",
+        );
+      }
+      if (top) {
+        insights.push(
+          `Largest payee in view: ${top[0]} at ${inr(top[1].amount)} across ${top[1].count} txns.`,
+        );
+      }
+      const food = (agg.byCat.get("Food delivery") || 0) + (agg.byCat.get("Fast food") || 0);
+      const groceries = agg.byCat.get("Groceries") || 0;
+      if (food + groceries > 0) {
+        insights.push(
+          `Food delivery + fast food ${inr(food)} vs groceries ${inr(groceries)}.`,
+        );
+      }
+      const travel = agg.byCat.get("Travel & transport") || 0;
+      if (travel > 0) insights.push(`Travel & transport totals ${inr(travel)} in this filter.`);
+      if (agg.recurring[0]) {
+        insights.push(
+          `Most persistent recurring payee: ${agg.recurring[0].name} over ${agg.recurring[0].months} months (${inr(agg.recurring[0].total)}).`,
+        );
+      }
+      const investTotal = agg.byCat.get("Investments & credit") || 0;
+      if (investTotal > 0) {
+        insights.push(`Investments/credit detected: ${inr(investTotal)}.`);
+      }
+      if (failed.length) {
+        const failedAmt = failed.reduce((s, r) => s + r.amount, 0);
+        insights.push(
+          `File has ${failed.length} failed payments totaling ${inr(failedAmt)} attempted.`,
+        );
+      }
+
+      for (const t of insights) {
+        const li = document.createElement("li");
+        li.textContent = t;
+        list.appendChild(li);
+      }
+    }
+
+    function fillTable(tableId, rowsHtml) {
+      $(tableId).querySelector("tbody").innerHTML = rowsHtml;
+    }
+
+    function renderTables(agg, filtered, f) {
+      const merchants = [...agg.byMerchant.entries()]
+        .sort((a, b) => b[1].amount - a[1].amount)
+        .slice(0, f.topN);
+      fillTable(
+        "merchantTable",
+        merchants
+          .map(
+            ([name, m]) =>
+              `<tr><td>${escapeHtml(name)}</td><td class="num">${inr(m.amount)}</td><td class="num">${m.count}</td></tr>`,
+          )
+          .join(""),
+      );
+
+      fillTable(
+        "recurringTable",
+        agg.recurring
+          .slice(0, f.topN)
+          .map(
+            (r) =>
+              `<tr><td>${escapeHtml(r.name)}</td><td class="num">${r.months}</td><td class="num">${inr(r.total)}</td><td class="num">${inr(r.avg)}</td></tr>`,
+          )
+          .join(""),
+      );
+
+      const inv = [...agg.invest.entries()].sort((a, b) => b[1].amount - a[1].amount);
+      fillTable(
+        "investTable",
+        inv.length
+          ? inv
+              .map(
+                ([name, m]) =>
+                  `<tr><td>${escapeHtml(name)}</td><td class="num">${inr(m.amount)}</td><td class="num">${m.count}</td></tr>`,
+              )
+              .join("")
+          : `<tr><td colspan="3">No investment-like merchants in this filter.</td></tr>`,
+      );
+
+      const largest = [...filtered].sort((a, b) => b.amount - a.amount).slice(0, 30);
+      fillTable(
+        "largeTable",
+        largest
+          .map((r) => {
+            const who = r.counterparty || r.description || "—";
+            return `<tr>
+              <td>${escapeHtml((r.datetime || "").split(",")[0] || "")}</td>
+              <td>${escapeHtml(r.action)}</td>
+              <td>${escapeHtml(who.slice(0, 64))}</td>
+              <td class="num">${inr(r.amount)}</td>
+              <td>${escapeHtml(r.category)}</td>
+            </tr>`;
+          })
+          .join(""),
+      );
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderCharts(agg, allRows) {
+      destroyCharts();
+      const colors = chartColors();
+      const months = [...agg.byMonth.keys()].sort();
+      const transfer = months.map((m) => agg.byMonth.get(m).transfer);
+      const invest = months.map((m) => agg.byMonth.get(m).invest);
+      const lifestyle = months.map((m) => agg.byMonth.get(m).lifestyle);
+      const other = months.map((m) => agg.byMonth.get(m).other);
+
+      state.charts.monthly = new Chart($("monthlyChart"), {
+        type: "bar",
+        data: {
+          labels: months,
+          datasets: [
+            { label: "Self / bank transfer", data: transfer, backgroundColor: colors.transfer, stack: "a" },
+            { label: "Investments & credit", data: invest, backgroundColor: colors.invest, stack: "a" },
+            { label: "Lifestyle", data: lifestyle, backgroundColor: colors.lifestyle, stack: "a" },
+            { label: "Other / P2P / unlabeled", data: other, backgroundColor: colors.other, stack: "a" },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12 } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${inr(ctx.parsed.y)}`,
+              },
+            },
+          },
+          scales: {
+            x: { stacked: true, ticks: { maxRotation: 60, minRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+            y: {
+              stacked: true,
+              ticks: { callback: (v) => inr(v) },
+            },
+          },
+        },
+      });
+
+      const catEntries = [...agg.byCat.entries()].sort((a, b) => b[1] - a[1]);
+      state.charts.category = new Chart($("categoryChart"), {
+        type: "doughnut",
+        data: {
+          labels: catEntries.map(([k]) => k),
+          datasets: [
+            {
+              data: catEntries.map(([, v]) => v),
+              backgroundColor: catEntries.map((_, i) => colors.palette[i % colors.palette.length]),
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${inr(ctx.parsed)}`,
+              },
+            },
+          },
+        },
+      });
+
+      const yearly = yearlySeries(allRows);
+      state.charts.yearly = new Chart($("yearlyChart"), {
+        type: "line",
+        data: {
+          labels: yearly.labels,
+          datasets: [
+            {
+              label: "Outflow (Paid+Sent)",
+              data: yearly.out,
+              borderColor: colors.out,
+              backgroundColor: "rgba(155,44,44,0.12)",
+              fill: true,
+              tension: 0.25,
+            },
+            {
+              label: "Inflow (Received)",
+              data: yearly.inn,
+              borderColor: colors.in,
+              backgroundColor: "rgba(15,107,76,0.12)",
+              fill: true,
+              tension: 0.25,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12 } },
+            tooltip: {
+              callbacks: { label: (ctx) => `${ctx.dataset.label}: ${inr(ctx.parsed.y)}` },
+            },
+          },
+          scales: { y: { ticks: { callback: (v) => inr(v) } } },
+        },
+      });
+
+      const wdLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      state.charts.weekday = new Chart($("weekdayChart"), {
+        type: "bar",
+        data: {
+          labels: wdLabels,
+          datasets: [
+            {
+              label: "Amount",
+              data: agg.byWeekday,
+              backgroundColor: colors.lifestyle,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: (ctx) => inr(ctx.parsed.y) } },
+          },
+          scales: { y: { ticks: { callback: (v) => inr(v) } } },
+        },
+      });
+
+      const st = statusSeries(allRows);
+      state.charts.status = new Chart($("statusChart"), {
+        type: "doughnut",
+        data: {
+          labels: st.labels,
+          datasets: [
+            {
+              data: st.data,
+              backgroundColor: st.labels.map((_, i) => colors.palette[i % colors.palette.length]),
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12 } },
+          },
+        },
+      });
+    }
+
+    function refresh() {
+      if (!state.rows.length) return;
+      const f = getFilters();
+      const filtered = applyFilters(state.rows, f);
+      const agg = aggregate(filtered);
+      renderStats(agg, f, state.rows);
+      renderInsights(agg, filtered, state.rows, f);
+      renderTables(agg, filtered, f);
+      renderCharts(agg, state.rows);
+      $("exportBtn").disabled = filtered.length === 0;
+      $("downloadCsvBtn").disabled = !state.extractedRaw.length;
+      state.filtered = filtered;
+    }
+
+    function loadRows(raw, fileLabel, sourceKind) {
+      showError("");
+      state.sourceKind = sourceKind;
+      state.extractedRaw = raw.map((r) => ({ ...r }));
+      const rows = normalizeRows(raw);
+      if (!rows.length) throw new Error("No usable activity rows found.");
+      state.rows = rows;
+
+      const dated = rows.filter((r) => r.dt).sort((a, b) => a.dt - b.dt);
+      if (dated.length) {
+        $("fromDate").value = toISODate(dated[0].dt);
+        $("toDate").value = toISODate(dated[dated.length - 1].dt);
+      }
+
+      const kindLabel = sourceKind === "html" ? "HTML extracted" : "CSV loaded";
+      setMeta(
+        `${fileLabel} · ${kindLabel} · ${rows.length.toLocaleString("en-IN")} rows · ${toISODate(dated[0]?.dt)} → ${toISODate(dated[dated.length - 1]?.dt)}`,
+      );
+      $("controls").style.display = "grid";
+      $("dashboard").style.display = "block";
+      refresh();
+    }
+
+    async function handleFile(file) {
+      try {
+        showError("");
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+        setMeta(`Reading ${file.name} (${sizeMb} MB)…`);
+        $("downloadCsvBtn").disabled = true;
+        $("exportBtn").disabled = true;
+
+        const text = await file.text();
+        const name = file.name.toLowerCase();
+        const isHtml =
+          name.endsWith(".html") ||
+          name.endsWith(".htm") ||
+          looksLikeActivityHtml(text);
+
+        if (isHtml) {
+          if (!looksLikeActivityHtml(text)) {
+            throw new Error(
+              "This HTML does not look like a Google Pay My Activity export (missing outer-cell blocks).",
+            );
+          }
+          setMeta(`Parsing activity blocks from ${file.name}…`);
+          // Yield so the status text can paint before heavy work
+          await new Promise((r) => setTimeout(r, 30));
+          const raw = extractActivitiesFromHtml(text);
+          if (!raw.length) {
+            throw new Error("No outer-cell activity entries found in the HTML.");
+          }
+          loadRows(raw, file.name, "html");
+          return;
+        }
+
+        const raw = parseCSV(text);
+        if (!raw.length) throw new Error("Could not parse CSV.");
+        loadRows(raw, file.name, "csv");
+      } catch (err) {
+        console.error(err);
+        showError(err.message || String(err));
+        $("dashboard").style.display = "none";
+        $("controls").style.display = "none";
+        setMeta("No file loaded");
+        $("downloadCsvBtn").disabled = true;
+        $("exportBtn").disabled = true;
+      }
+    }
+
+    function downloadExtractedCsv() {
+      if (!state.extractedRaw.length) return;
+      const csv = rowsToCsv(state.extractedRaw);
+      const base =
+        (state.sourceKind === "html" ? "my-activity-extracted" : "activity") +
+        ".csv";
+      downloadText(base, csv);
+    }
+
+    function exportFiltered() {
+      const rows = state.filtered || [];
+      if (!rows.length) return;
+      const cols = [
+        "product",
+        "action",
+        "description",
+        "amount",
+        "currency",
+        "counterparty",
+        "payment_method",
+        "datetime",
+        "status",
+        "transaction_id",
+        "category",
+      ];
+      downloadText("activity-filtered.csv", rowsToCsv(rows, cols));
+    }
+
+    // Wire UI
+    const drop = $("dropzone");
+    const input = $("fileInput");
+    $("browseBtn").addEventListener("click", () => input.click());
+    drop.addEventListener("click", () => input.click());
+    drop.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") input.click();
+    });
+    input.addEventListener("change", () => {
+      if (input.files?.[0]) handleFile(input.files[0]);
+    });
+    ["dragenter", "dragover"].forEach((ev) =>
+      drop.addEventListener(ev, (e) => {
+        e.preventDefault();
+        drop.classList.add("dragover");
+      }),
+    );
+    ["dragleave", "drop"].forEach((ev) =>
+      drop.addEventListener(ev, (e) => {
+        e.preventDefault();
+        drop.classList.remove("dragover");
+      }),
+    );
+    drop.addEventListener("drop", (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    [
+      "fromDate",
+      "toDate",
+      "statusFilter",
+      "transferCut",
+      "excludeSelf",
+      "direction",
+      "search",
+      "topN",
+    ].forEach((id) => {
+      $(id).addEventListener("change", refresh);
+      $(id).addEventListener("input", () => {
+        if (id === "search" || id === "transferCut" || id === "topN") refresh();
+      });
+    });
+
+    $("exportBtn").addEventListener("click", exportFiltered);
+    $("downloadCsvBtn").addEventListener("click", downloadExtractedCsv);
+  </script>
+</body>
+</html>
