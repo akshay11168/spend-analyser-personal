@@ -3,7 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GPay Activity Studio</title>
+  <title>GPay Activity Studio | Spend from Takeout</title>
+  <meta name="description" content="Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded." />
+  <meta name="author" content="Akshay Biradar" />
+  <link rel="canonical" href="https://spend-analyser-gpay.biradarakshay.com/" />
+  <link rel="author" href="https://www.biradarakshay.com/" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <meta name="theme-color" content="#f3f5f2" />
+  <meta property="og:site_name" content="GPay Activity Studio" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="GPay Activity Studio | Spend from Takeout" />
+  <meta property="og:description" content="Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://spend-analyser-gpay.biradarakshay.com/" />
+  <meta property="og:image" content="https://spend-analyser-gpay.biradarakshay.com/og.svg" />
+  <meta property="og:image:alt" content="GPay Activity Studio. Google Pay spend, read in the browser." />
+  <meta property="og:image:type" content="image/svg+xml" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GPay Activity Studio | Spend from Takeout" />
+  <meta name="twitter:description" content="Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded." />
+  <meta name="twitter:image" content="https://spend-analyser-gpay.biradarakshay.com/og.svg" />
+  <meta name="twitter:image:alt" content="GPay Activity Studio. Google Pay spend, read in the browser." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://spend-analyser-gpay.biradarakshay.com/#app",
+          "name": "GPay Activity Studio",
+          "url": "https://spend-analyser-gpay.biradarakshay.com/",
+          "description": "Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript",
+          "isAccessibleForFree": true,
+          "author": { "@id": "https://www.biradarakshay.com/#person" },
+          "creator": { "@id": "https://www.biradarakshay.com/#person" }
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://spend-analyser-gpay.biradarakshay.com/#webpage",
+          "url": "https://spend-analyser-gpay.biradarakshay.com/",
+          "name": "GPay Activity Studio | Spend from Takeout",
+          "description": "Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded.",
+          "inLanguage": "en",
+          "isPartOf": { "@id": "https://www.biradarakshay.com/#website" },
+          "about": { "@id": "https://spend-analyser-gpay.biradarakshay.com/#app" },
+          "mainEntity": { "@id": "https://spend-analyser-gpay.biradarakshay.com/#app" },
+          "author": { "@id": "https://www.biradarakshay.com/#person" },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://spend-analyser-gpay.biradarakshay.com/og.svg",
+            "width": 1200,
+            "height": 630
+          }
+        }
+      ]
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
@@ -63,6 +124,14 @@
       margin: 0;
       color: var(--muted);
       max-width: 62ch;
+    }
+    .byline {
+      margin-top: 8px;
+      font-size: 0.92rem;
+    }
+    .byline a {
+      color: var(--accent);
+      font-weight: 600;
     }
 
     .panel {
@@ -306,6 +375,94 @@
       color: var(--danger);
       font-size: 0.9rem;
     }
+
+    .privacy {
+      display: grid;
+      gap: 4px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      background: #f4f7fb;
+      border-color: #d3e0ec;
+    }
+    .privacy .kicker {
+      color: var(--info);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .privacy p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.95rem;
+    }
+    .privacy p + p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .privacy a { color: var(--info); }
+
+    .guide {
+      padding: 18px 20px 6px;
+      margin-bottom: 18px;
+    }
+    .guide h2 {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      margin: 0 0 6px;
+      font-weight: 700;
+    }
+    .guide .lede {
+      margin: 0 0 14px;
+      color: var(--muted);
+      max-width: 75ch;
+    }
+    .guide ol {
+      margin: 0 0 8px;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .guide li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    .guide li .n {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: grid;
+      place-items: center;
+    }
+    .guide li p { margin: 0; }
+    .path {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.84em;
+      background: #f4f7f5;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1px 6px;
+    }
+    .guide a { color: var(--accent); }
+    .guide-note {
+      margin: 4px 0 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f8faf8;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+    .guide-note strong { display: block; margin-bottom: 4px; }
+    .guide-note p { margin: 0; }
+    .guide-note p + p { margin-top: 6px; }
   </style>
 </head>
 <body>
@@ -313,17 +470,80 @@
     <header class="hero">
       <h1>GPay Activity Studio</h1>
       <p>
-        One page for the full pipeline: drop Google Takeout
-        <strong>My Activity.html</strong> (or an already-extracted CSV), parse every
-        <code>outer-cell</code> into rows, then analyze spend, transfers, merchants,
-        and trends. You can also download the extracted CSV.
+        Drop a Google Takeout <strong>My Activity.html</strong> export, or a CSV
+        this page already extracted, to see spend, transfers, merchants, and trends.
+        The steps to download the right file are below.
       </p>
+      <p class="byline">A browser tool by <a href="https://www.biradarakshay.com/" rel="author">Akshay Biradar</a></p>
     </header>
+
+    <aside class="panel privacy">
+      <div class="kicker">Privacy</div>
+      <p><strong>Nothing from your file is saved.</strong> It stays in this browser tab. It is never uploaded, and it is not written to cookies, local storage, or a server.</p>
+      <p>Parsing and charts run on your device. Refreshing or closing the tab clears the data. A CSV download is a file you choose to save yourself. Fonts and the chart library load from public CDNs; your transactions are not sent with those requests.</p>
+      <p>Page visits are counted without cookies, using the same Cloudflare and Umami tools as <a href="https://www.biradarakshay.com/">biradarakshay.com</a>. That count is the page address only. It does not include your file, its name, merchants, or amounts.</p>
+    </aside>
+
+    <section class="panel guide" aria-labelledby="howto-title">
+      <h2 id="howto-title">How to get My Activity.html</h2>
+      <p class="lede">
+        This page reads the HTML history from Google Takeout’s <strong>My Activity</strong> product, filtered to Google Pay.
+        A statement from the GPay app, a bank CSV, or the separate Google Pay product download (usually JSON) will not work.
+      </p>
+      <ol>
+        <li>
+          <span class="n">1</span>
+          <p>On a computer, open <a href="https://takeout.google.com" target="_blank" rel="noopener noreferrer">takeout.google.com</a> and sign in with the Google account you use for Google Pay.</p>
+        </li>
+        <li>
+          <span class="n">2</span>
+          <p>Under “Select data to include”, click <strong>Deselect all</strong> so every product is turned off.</p>
+        </li>
+        <li>
+          <span class="n">3</span>
+          <p>Scroll to <strong>My Activity</strong> and turn on only that product. Leave the separate <strong>Google Pay</strong> and <strong>Google Wallet</strong> products off. Those exports use a different format, and this page cannot read them.</p>
+        </li>
+        <li>
+          <span class="n">4</span>
+          <p>Under My Activity, click <strong>All activity data included</strong>. The button sometimes says “Multiple formats”.</p>
+        </li>
+        <li>
+          <span class="n">5</span>
+          <p>Click <strong>Deselect all</strong> again, then select only <strong>Google Pay</strong>. Click <strong>OK</strong>.</p>
+        </li>
+        <li>
+          <span class="n">6</span>
+          <p>At the bottom of the page, click <strong>Next step</strong>.</p>
+        </li>
+        <li>
+          <span class="n">7</span>
+          <p>Set delivery to <strong>Send download link via email</strong>, frequency to <strong>Export once</strong>, and file type to <strong>.zip</strong>. Click <strong>Create export</strong>.</p>
+        </li>
+        <li>
+          <span class="n">8</span>
+          <p>Wait for Google’s email. It often arrives in minutes and can take several hours. Open <strong>Download your files</strong> and save the archive. The link usually expires after about 7 days.</p>
+        </li>
+        <li>
+          <span class="n">9</span>
+          <p>Unzip the archive. The file you want is <span class="path">Takeout/My Activity/Google Pay/My Activity.html</span>.</p>
+        </li>
+        <li>
+          <span class="n">10</span>
+          <p>Drop that file below, or use <strong>Choose file</strong>. A CSV you previously downloaded from this page works too.</p>
+        </li>
+      </ol>
+      <div class="guide-note">
+        <strong>Make sure it is the Google Pay file</strong>
+        <p>The zip can contain several files named <span class="path">My Activity.html</span> (Search, YouTube, Maps, and others). Use only the one inside the <strong>Google Pay</strong> folder. Opened in a browser, it should list payments such as Paid, Sent, and Received, each with a date.</p>
+        <p>A large history is sometimes split into <span class="path">My Activity.html</span>, <span class="path">My Activity-1.html</span>, and so on in that same folder. Load each part on its own; this page does not merge files.</p>
+        <p>If the Google Pay folder contains only JSON, you exported the Google Pay product instead of My Activity. Start again from step 2 and select <strong>My Activity</strong> only.</p>
+      </div>
+    </section>
 
     <section class="panel upload">
       <div class="drop" id="dropzone" tabindex="0" role="button" aria-label="Upload My Activity HTML or CSV">
         <strong>Drop My Activity.html or CSV here</strong>
-        <span>HTML = Google Pay / Takeout export · CSV = previously extracted activity file</span>
+        <span>HTML from Takeout → My Activity → Google Pay · CSV from a previous extract on this page</span>
       </div>
       <div class="upload-row">
         <div class="file-meta" id="fileMeta">No file loaded</div>
@@ -500,7 +720,7 @@
       </div>
 
       <footer class="note">
-        HTML parsing looks for repeating <code>outer-cell</code> blocks (Google Pay Takeout format).
+        Nothing from your activity file is uploaded or saved. HTML parsing looks for repeating <code>outer-cell</code> blocks (Google Pay My Activity format).
         Categories are name-based heuristics and will mislabel some merchants.
         Google Pay exports are not a full bank ledger — salary, cash, and other UPI apps may be missing.
         Charts need an internet connection once (Chart.js CDN + fonts). Large HTML files may take a few seconds to parse.
@@ -1583,6 +1803,7 @@
       );
       $("controls").style.display = "grid";
       $("dashboard").style.display = "block";
+      track("file_loaded", sourceKind);
       refresh();
     }
 
@@ -1639,6 +1860,7 @@
         (state.sourceKind === "html" ? "my-activity-extracted" : "activity") +
         ".csv";
       downloadText(base, csv);
+      track("csv_download", "extracted");
     }
 
     function exportFiltered() {
@@ -1658,6 +1880,7 @@
         "category",
       ];
       downloadText("activity-filtered.csv", rowsToCsv(rows, cols));
+      track("csv_download", "filtered");
     }
 
     // Wire UI
@@ -1706,6 +1929,37 @@
 
     $("exportBtn").addEventListener("click", exportFiltered);
     $("downloadCsvBtn").addEventListener("click", downloadExtractedCsv);
+    loadAnalytics();
+
+    function isAnalyticsHost() {
+      const host = location.hostname;
+      return host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]" && !host.endsWith(".local");
+    }
+
+    function track(event, kind) {
+      const events = { file_loaded: true, csv_download: true };
+      const kinds = { html: true, csv: true, extracted: true, filtered: true };
+      if (!events[event] || !kinds[kind] || !isAnalyticsHost()) return;
+      const umami = window.umami;
+      if (!umami || typeof umami.track !== "function") return;
+      umami.track(event, { kind });
+    }
+
+    function loadAnalytics() {
+      if (!isAnalyticsHost()) return;
+      const beacon = document.createElement("script");
+      beacon.defer = true;
+      beacon.src = "https://static.cloudflareinsights.com/beacon.min.js";
+      beacon.setAttribute("data-cf-beacon", '{"token":"ac6516edcf8f43f1912382b20a76db8a"}');
+      document.body.appendChild(beacon);
+
+      const umami = document.createElement("script");
+      umami.defer = true;
+      umami.src = "https://cloud.umami.is/script.js";
+      umami.dataset.websiteId = "c253a55c-76c4-42c5-8e19-a7d3d2498213";
+      umami.dataset.domains = "spend-analyser-gpay.biradarakshay.com";
+      document.body.appendChild(umami);
+    }
   </script>
 </body>
 </html>

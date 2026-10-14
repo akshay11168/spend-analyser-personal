@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f3f5f2"/>
+  <rect width="1200" height="14" fill="#0f6b4c"/>
+  <text x="80" y="250" fill="#14201a" font-family="Georgia, serif" font-size="68">GPay Activity Studio</text>
+  <text x="80" y="340" fill="#5c6b63" font-family="Georgia, serif" font-size="36">Google Pay spend, read in the browser.</text>
+  <text x="80" y="430" fill="#0f6b4c" font-family="ui-monospace, monospace" font-size="28">The activity file stays on your device.</text>
+  <text x="80" y="530" fill="#5c6b63" font-family="ui-monospace, monospace" font-size="24">spend-analyser-gpay.biradarakshay.com</text>
+</svg>
