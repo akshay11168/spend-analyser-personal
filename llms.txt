@@ -1,0 +1,15 @@
+# GPay Activity Studio
+
+> A browser tool that turns a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views.
+
+Parsing and the charts run in the browser. The file is not uploaded.
+
+- Site: https://spend-analyser-gpay.biradarakshay.com/
+- Author: Akshay Biradar
+- Author site: https://www.biradarakshay.com/
+- LinkedIn: https://www.linkedin.com/in/biradar-akshay/
+- GitHub: https://github.com/akshay11168
+
+## What this site does not do
+
+It does not store the activity file, upload transactions, connect to a Google account, or keep a spending history after the tab is closed.

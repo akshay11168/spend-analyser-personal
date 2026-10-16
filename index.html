@@ -9,7 +9,10 @@
   <link rel="canonical" href="https://spend-analyser-gpay.biradarakshay.com/" />
   <link rel="author" href="https://www.biradarakshay.com/" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-  <meta name="theme-color" content="#f3f5f2" />
+  <meta name="theme-color" content="#f3f7f6" />
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="Plain-text summary of this site" />
+  <link rel="me" href="https://www.linkedin.com/in/biradar-akshay/" />
+  <link rel="me" href="https://github.com/akshay11168" />
   <meta property="og:site_name" content="GPay Activity Studio" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:title" content="GPay Activity Studio | Spend from Takeout" />
@@ -32,6 +35,19 @@
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "WebSite",
+          "@id": "https://spend-analyser-gpay.biradarakshay.com/#website",
+          "url": "https://spend-analyser-gpay.biradarakshay.com/",
+          "name": "GPay Activity Studio",
+          "description": "Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded.",
+          "inLanguage": "en",
+          "publisher": {
+            "@type": "Person",
+            "name": "Akshay Biradar",
+            "url": "https://www.biradarakshay.com/"
+          }
+        },
+        {
           "@type": "WebApplication",
           "@id": "https://spend-analyser-gpay.biradarakshay.com/#app",
           "name": "GPay Activity Studio",
@@ -51,7 +67,7 @@
           "name": "GPay Activity Studio | Spend from Takeout",
           "description": "Turn a Google Pay Takeout My Activity.html file into spend, transfer, merchant, and trend views. Parsing runs in your browser. The file is not uploaded.",
           "inLanguage": "en",
-          "isPartOf": { "@id": "https://www.biradarakshay.com/#website" },
+          "isPartOf": { "@id": "https://spend-analyser-gpay.biradarakshay.com/#website" },
           "about": { "@id": "https://spend-analyser-gpay.biradarakshay.com/#app" },
           "mainEntity": { "@id": "https://spend-analyser-gpay.biradarakshay.com/#app" },
           "author": { "@id": "https://www.biradarakshay.com/#person" },
@@ -65,28 +81,38 @@
       ]
     }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <style>
+    /* Fraunces, SIL Open Font License. Same face as biradarakshay.com. */
+    @font-face {
+      font-family: "Fraunces Variable";
+      font-style: normal;
+      font-display: swap;
+      font-weight: 100 900;
+      src: url("assets/fonts/fraunces-latin-wght-normal.woff2") format("woff2");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
     :root {
-      --bg: #f3f5f2;
+      --bg: #f3f7f6;
       --surface: #ffffff;
-      --ink: #14201a;
-      --muted: #5c6b63;
-      --line: #d5ddd7;
-      --accent: #0f6b4c;
-      --accent-soft: #e3f2eb;
-      --warn: #9a5b00;
-      --warn-soft: #fff1d6;
-      --danger: #9b2c2c;
-      --danger-soft: #fde8e8;
-      --info: #1d4f7a;
-      --shadow: 0 1px 0 rgba(20, 32, 26, 0.04);
-      --radius: 14px;
-      --font: "Figtree", system-ui, sans-serif;
-      --display: "Fraunces", Georgia, serif;
+      --ink: #14262c;
+      --muted: #4d6368;
+      --line: #d5e2e0;
+      --accent: #0f6e68;
+      --accent-soft: #d5eae6;
+      --warn: #8a6a1f;
+      --warn-soft: #f3efe2;
+      --danger: #9a564c;
+      --danger-soft: #f6ebe8;
+      --info: #0c5854;
+      --yellow: #e7b84a;
+      --shadow: 0 14px 34px rgba(44, 51, 50, 0.08);
+      --radius: 1rem;
+      --font: "Segoe UI", system-ui, sans-serif;
+      --display: "Fraunces Variable", "Iowan Old Style", Palatino, Georgia, serif;
+      --mono: "Cascadia Mono", "Segoe UI Mono", ui-monospace, monospace;
+      --focus: 3px solid var(--ink);
     }
 
     * { box-sizing: border-box; }
@@ -94,13 +120,55 @@
     body {
       font-family: var(--font);
       color: var(--ink);
-      background:
-        radial-gradient(1200px 500px at 10% -10%, #dff0e7 0%, transparent 55%),
-        radial-gradient(900px 400px at 100% 0%, #e7eef5 0%, transparent 50%),
-        var(--bg);
-      line-height: 1.45;
+      background: var(--bg);
+      line-height: 1.6;
+      font-size: 1.0625rem;
       min-height: 100vh;
     }
+
+    a { color: var(--info); text-underline-offset: 0.18em; }
+    a:hover { color: var(--accent); }
+    :focus-visible { outline: var(--focus); outline-offset: 3px; }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: 0.5rem;
+      z-index: 20;
+      transform: translateY(-150%);
+      background: var(--yellow);
+      color: var(--ink);
+      padding: 0.6rem 0.8rem;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .skip-link:focus { transform: none; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 0.85rem 0;
+    }
+    .wordmark {
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--display);
+      font-weight: 560;
+      letter-spacing: -0.03em;
+      font-size: 1.35rem;
+      line-height: 1.08;
+    }
+    .wordmark:hover { color: var(--ink); }
 
     .wrap {
       width: min(1180px, calc(100% - 32px));
@@ -115,24 +183,46 @@
     }
     header.hero h1 {
       font-family: var(--display);
-      font-weight: 700;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 560;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      font-size: clamp(2.15rem, 6vw, 3.2rem);
       margin: 0;
-      letter-spacing: -0.02em;
+      max-width: 16ch;
     }
     header.hero p {
       margin: 0;
       color: var(--muted);
       max-width: 62ch;
     }
+    .index-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+    }
+    .index {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.4rem;
+    }
+    .kicker {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
     .byline {
-      margin-top: 8px;
-      font-size: 0.92rem;
+      margin-top: 0.8rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--muted);
     }
-    .byline a {
-      color: var(--accent);
-      font-weight: 600;
-    }
+    .byline a { color: var(--info); font-weight: 600; }
 
     .panel {
       background: var(--surface);
@@ -148,11 +238,11 @@
       margin-bottom: 18px;
     }
     .drop {
-      border: 1.5px dashed #a9b8b0;
-      border-radius: 12px;
+      border: 1.5px dashed var(--line);
+      border-radius: var(--radius);
       padding: 28px 18px;
       text-align: center;
-      background: #f8faf8;
+      background: #e4f1ef;
       transition: border-color .15s, background .15s;
       cursor: pointer;
     }
@@ -174,14 +264,17 @@
 
     button, .btn {
       appearance: none;
-      border: 1px solid var(--line);
-      background: var(--surface);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      border: 2px solid var(--ink);
+      background: transparent;
       color: var(--ink);
       border-radius: 999px;
-      padding: 9px 16px;
-      font: inherit;
-      font-weight: 600;
-      font-size: 0.92rem;
+      min-height: 44px;
+      padding: 0.65rem 1rem;
+      font: 600 1rem/1 var(--font);
       cursor: pointer;
     }
     button.primary {
@@ -189,7 +282,29 @@
       border-color: var(--accent);
       color: #fff;
     }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.primary::after {
+      content: "";
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--yellow);
+      flex: none;
+    }
+    button:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    button.primary:hover {
+      background: var(--info);
+      border-color: var(--info);
+      color: #fff;
+    }
+    button:disabled, button:disabled:hover { opacity: 0.45; cursor: default; background: transparent; color: var(--ink); border-color: var(--ink); }
+    button.primary:disabled, button.primary:disabled:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
     .controls {
       display: none;
@@ -207,18 +322,20 @@
     .controls label {
       display: grid;
       gap: 6px;
-      font-size: 0.82rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
     }
     .controls input, .controls select {
       width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 9px 11px;
-      font: inherit;
+      min-height: 44px;
+      border: 2px solid var(--line);
+      border-radius: 0.7rem;
+      padding: 0.65rem 0.7rem;
+      font: 1rem/1.4 var(--font);
       color: var(--ink);
-      background: #fff;
+      background: var(--surface);
     }
 
     #dashboard { display: none; }
@@ -244,26 +361,27 @@
     }
     .stat .value {
       font-family: var(--display);
+      font-weight: 560;
+      letter-spacing: -0.03em;
       font-size: 1.55rem;
       margin-top: 6px;
-      letter-spacing: -0.02em;
     }
     .stat .sub {
       margin-top: 4px;
       color: var(--muted);
       font-size: 0.85rem;
     }
-    .stat.accent { background: var(--accent-soft); border-color: #c5dfd2; }
-    .stat.warn { background: var(--warn-soft); border-color: #edd7a4; }
-    .stat.danger { background: var(--danger-soft); border-color: #f0c4c4; }
+    .stat.accent { background: var(--accent-soft); border-color: var(--line); }
+    .stat.warn { background: var(--warn-soft); border-color: var(--line); }
+    .stat.danger { background: var(--danger-soft); border-color: var(--line); }
 
     .callout {
       padding: 14px 16px;
-      border-radius: 12px;
+      border-radius: var(--radius);
       background: var(--accent-soft);
-      border: 1px solid #c5dfd2;
+      border: 1px solid var(--line);
       margin-bottom: 18px;
-      color: #184536;
+      color: var(--ink);
     }
     .callout strong { color: var(--ink); }
 
@@ -286,9 +404,10 @@
     .card { padding: 16px; }
     .card h2 {
       font-family: var(--display);
-      font-size: 1.2rem;
+      font-size: 1.35rem;
+      font-weight: 560;
+      letter-spacing: -0.03em;
       margin: 0 0 4px;
-      font-weight: 700;
     }
     .card .hint {
       color: var(--muted);
@@ -321,7 +440,7 @@
       font-weight: 700;
     }
     table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
-    table.data tr:hover td { background: #f7faf8; }
+    table.data tr:hover td { background: #e4f1ef; }
     .scroll {
       max-height: 360px;
       overflow: auto;
@@ -344,10 +463,10 @@
       padding: 5px 10px;
       font-size: 0.8rem;
       font-weight: 600;
-      background: #eef2ef;
+      background: #e4f1ef;
       color: var(--ink);
     }
-    .pill.green { background: var(--accent-soft); color: #0f6b4c; }
+    .pill.green { background: var(--accent-soft); color: var(--accent); }
     .pill.amber { background: var(--warn-soft); color: var(--warn); }
     .pill.red { background: var(--danger-soft); color: var(--danger); }
 
@@ -369,11 +488,43 @@
     .error {
       display: none;
       margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: var(--danger-soft);
-      color: var(--danger);
+      padding: 0.25rem 0.45rem;
+      width: fit-content;
+      max-width: 100%;
+      background: var(--yellow);
+      color: var(--ink);
       font-size: 0.9rem;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 2.5rem;
+    }
+    .footer-grid {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: grid;
+      gap: 0.75rem;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .footer-links a {
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+    .copyright {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
     }
 
     .privacy {
@@ -381,15 +532,15 @@
       gap: 4px;
       padding: 14px 16px;
       margin-bottom: 18px;
-      background: #f4f7fb;
-      border-color: #d3e0ec;
+      background: #e4f1ef;
+      border-color: var(--line);
     }
     .privacy .kicker {
-      color: var(--info);
-      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
     .privacy p {
       margin: 0;
@@ -408,9 +559,10 @@
     }
     .guide h2 {
       font-family: var(--display);
-      font-size: 1.35rem;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 560;
+      letter-spacing: -0.03em;
       margin: 0 0 6px;
-      font-weight: 700;
     }
     .guide .lede {
       margin: 0 0 14px;
@@ -433,11 +585,12 @@
     .guide li .n {
       width: 28px;
       height: 28px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
+      border-radius: 0;
+      background: var(--yellow);
+      color: var(--ink);
+      font-family: var(--mono);
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       display: grid;
       place-items: center;
     }
@@ -445,17 +598,17 @@
     .path {
       font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
       font-size: 0.84em;
-      background: #f4f7f5;
+      background: #e4f1ef;
       border: 1px solid var(--line);
       border-radius: 6px;
       padding: 1px 6px;
     }
-    .guide a { color: var(--accent); }
+    .guide a { color: var(--info); }
     .guide-note {
       margin: 4px 0 14px;
       padding: 12px 14px;
-      border-radius: 10px;
-      background: #f8faf8;
+      border-radius: var(--radius);
+      background: var(--surface);
       border: 1px solid var(--line);
       color: var(--ink);
       font-size: 0.9rem;
@@ -466,8 +619,19 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="https://www.biradarakshay.com/">Akshay Biradar</a>
+    </div>
+  </header>
+  <main id="content">
   <div class="wrap">
     <header class="hero">
+      <p class="index-row">
+        <span class="index">01</span>
+        <span class="kicker">In the browser</span>
+      </p>
       <h1>GPay Activity Studio</h1>
       <p>
         Drop a Google Takeout <strong>My Activity.html</strong> export, or a CSV
@@ -480,7 +644,7 @@
     <aside class="panel privacy">
       <div class="kicker">Privacy</div>
       <p><strong>Nothing from your file is saved.</strong> It stays in this browser tab. It is never uploaded, and it is not written to cookies, local storage, or a server.</p>
-      <p>Parsing and charts run on your device. Refreshing or closing the tab clears the data. A CSV download is a file you choose to save yourself. Fonts and the chart library load from public CDNs; your transactions are not sent with those requests.</p>
+      <p>Parsing and charts run on your device. Refreshing or closing the tab clears the data. A CSV download is a file you choose to save yourself. The chart library loads from a public CDN. Your transactions are not sent with that request.</p>
       <p>Page visits are counted without cookies, using the same Cloudflare and Umami tools as <a href="https://www.biradarakshay.com/">biradarakshay.com</a>. That count is the page address only. It does not include your file, its name, merchants, or amounts.</p>
     </aside>
 
@@ -723,12 +887,31 @@
         Nothing from your activity file is uploaded or saved. HTML parsing looks for repeating <code>outer-cell</code> blocks (Google Pay My Activity format).
         Categories are name-based heuristics and will mislabel some merchants.
         Google Pay exports are not a full bank ledger — salary, cash, and other UPI apps may be missing.
-        Charts need an internet connection once (Chart.js CDN + fonts). Large HTML files may take a few seconds to parse.
+        Charts need an internet connection once, for the Chart.js library. Large HTML files may take a few seconds to parse.
       </footer>
     </div>
   </div>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <p class="wordmark">Akshay Biradar</p>
+      <p>Big ideas are easy. Making them work is the job.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.biradarakshay.com/">biradarakshay.com</a></li>
+        <li><a href="https://www.linkedin.com/in/biradar-akshay/" rel="me noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/akshay11168" rel="me noopener noreferrer">GitHub</a></li>
+      </ul>
+      <p class="copyright">© 2026 Akshay Biradar</p>
+    </div>
+  </footer>
 
   <script>
+    if (typeof Chart !== "undefined") {
+      Chart.defaults.font.family = '"Segoe UI", system-ui, sans-serif';
+      Chart.defaults.color = "#4d6368";
+      Chart.defaults.borderColor = "#d5e2e0";
+    }
+
     const MONTHS_SHORT = {
       Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
       Jul: 6, Aug: 7, Sept: 8, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
@@ -1222,22 +1405,22 @@
 
     function chartColors() {
       return {
-        transfer: "#c9851a",
-        invest: "#0f6b4c",
-        lifestyle: "#1d4f7a",
-        other: "#7a8790",
-        out: "#9b2c2c",
-        in: "#0f6b4c",
+        transfer: "#e7b84a",
+        invest: "#0f6e68",
+        lifestyle: "#0c5854",
+        other: "#4d6368",
+        out: "#9a564c",
+        in: "#0f6e68",
         palette: [
-          "#0f6b4c",
-          "#1d4f7a",
-          "#c9851a",
-          "#9b2c2c",
-          "#5b4a8a",
-          "#2f6f6a",
-          "#8a5a2b",
-          "#4d5d53",
-          "#356189",
+          "#0f6e68",
+          "#e7b84a",
+          "#0c5854",
+          "#9a564c",
+          "#14343a",
+          "#4d6368",
+          "#8a6a1f",
+          "#5d7a86",
+          "#c4a15a",
         ],
       };
     }
@@ -1695,7 +1878,7 @@
               label: "Outflow (Paid+Sent)",
               data: yearly.out,
               borderColor: colors.out,
-              backgroundColor: "rgba(155,44,44,0.12)",
+              backgroundColor: "rgba(154,86,76,0.12)",
               fill: true,
               tension: 0.25,
             },
@@ -1703,7 +1886,7 @@
               label: "Inflow (Received)",
               data: yearly.inn,
               borderColor: colors.in,
-              backgroundColor: "rgba(15,107,76,0.12)",
+              backgroundColor: "rgba(15,110,104,0.12)",
               fill: true,
               tension: 0.25,
             },
@@ -1942,7 +2125,7 @@
       if (!events[event] || !kinds[kind] || !isAnalyticsHost()) return;
       const umami = window.umami;
       if (!umami || typeof umami.track !== "function") return;
-      umami.track(event, { kind });
+      umami.track(event, { kind, path: location.pathname });
     }
 
     function loadAnalytics() {
